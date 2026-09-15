@@ -1,0 +1,7 @@
+services:
+  nginx:
+    container_name: nginx_buschmann
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    restart: unless-stopped
