@@ -2,7 +2,6 @@
 
 In diesem Projekt habe ich mich mit Docker und verschiedenen Docker-Containern beschäftigt. Dafür habe ich Pi-hole, Portainer, Watchtower und Nginx eingerichtet und getestet.
 
-Die Inhalte basieren auf dem c't-3003-Video und dem dazugehörigen [GitHub-Gist](https://gist.github.com/jamct/2e6c03f60319423bc4bc6c23fc0aa359).
 
 ## Pi-hole
 
@@ -16,18 +15,6 @@ Pi-hole ist ein DNS-Server, der Werbung und Trackinganfragen im Netzwerk blockie
 pihole/pihole:latest
 ```
 
-### Verwendete Ports
-
-* `53/TCP` für DNS
-* `53/UDP` für DNS
-* `67/UDP` für DHCP
-* `80/TCP` für die Weboberfläche
-
-Die Weboberfläche kann über diese Adresse geöffnet werden:
-
-```text
-http://localhost/admin
-```
 
 ### Pi-hole starten
 
@@ -148,8 +135,6 @@ docker compose -f nginx/nginx.yml down
 ```
 
 ## Container kontrollieren
-
-Mit diesem Befehl werden alle laufenden Container angezeigt:
 
 ```powershell
 docker ps
