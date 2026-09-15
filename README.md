@@ -1,149 +1,162 @@
 # Docker Grundlagen
 
-Dieses Repository enthält Docker-Compose-Dateien für Pi-hole, Portainer, Watchtower und Nginx.
+In diesem Projekt habe ich mich mit Docker und verschiedenen Docker-Containern beschäftigt. Dafür habe ich Pi-hole, Portainer, Watchtower und Nginx eingerichtet und getestet.
 
-Die Inhalte basieren auf dem c't-3003-Video und dem dazugehörigen GitHub-Gist:
+Die Inhalte basieren auf dem c't-3003-Video und dem dazugehörigen [GitHub-Gist](https://gist.github.com/jamct/2e6c03f60319423bc4bc6c23fc0aa359).
 
-https://gist.github.com/jamct/2e6c03f60319423bc4bc6c23fc0aa359
+## Pi-hole
 
-## Mit Docker arbeiten
+### Aufgabe und Zweck
 
-Laufende Container anzeigen:
+Pi-hole ist ein DNS-Server, der Werbung und Trackinganfragen im Netzwerk blockieren kann. Weitere Informationen gibt es auf der [Pi-hole-Webseite](https://pi-hole.net/).
 
-```bash
-docker ps
-```
-
-Alle Container anzeigen, einschließlich gestoppter Container:
-
-```bash
-docker ps -a
-```
-
-Einen Container anhalten:
-
-```bash
-docker stop <Containername>
-```
-
-Einen gestoppten Container löschen:
-
-```bash
-docker rm <Containername>
-```
-
-## Einen einfachen Webserver starten
-
-Ein Nginx-Container kann mit folgendem Befehl gestartet werden:
-
-```bash
-docker run -p 80:80 nginx
-```
-
-## Mit Docker Compose arbeiten
-
-Eine Compose-Anwendung im Hintergrund starten:
-
-```bash
-docker compose up -d
-```
-
-Eine Compose-Anwendung beenden:
-
-```bash
-docker compose down
-```
-
-Neue Versionen der verwendeten Images herunterladen:
-
-```bash
-docker compose pull
-```
-
-## Projektstruktur
+### Docker-Image
 
 ```text
-Docker_basics_Buschmann/
-├── README.md
-├── .gitignore
-├── pihole/
-│   └── pihole.yml
-├── portainer/
-│   └── portainer.yml
-├── watchtower/
-│   └── watchtower.yml
-└── nginx/
-    └── nginx.yml
+pihole/pihole:latest
 ```
 
-## Anwendungen starten
+### Verwendete Ports
 
-### Pi-hole
+* `53/TCP` für DNS
+* `53/UDP` für DNS
+* `67/UDP` für DHCP
+* `80/TCP` für die Weboberfläche
 
-```bash
-docker compose -f pihole/pihole.yml up -d
-```
-
-Weboberfläche:
+Die Weboberfläche kann über diese Adresse geöffnet werden:
 
 ```text
 http://localhost/admin
 ```
 
-Pi-hole beenden:
+### Pi-hole starten
 
-```bash
+```powershell
+docker compose -f pihole/pihole.yml up -d
+```
+
+### Pi-hole beenden
+
+```powershell
 docker compose -f pihole/pihole.yml down
 ```
 
-### Portainer
+## Portainer
 
-```bash
-docker compose -f portainer/portainer.yml up -d
+### Aufgabe und Zweck
+
+Portainer bietet eine Weboberfläche, über die Docker-Container, Images, Netzwerke und Volumes verwaltet werden können. Weitere Informationen gibt es auf der [Portainer-Webseite](https://www.portainer.io/).
+
+### Docker-Image
+
+```text
+portainer/portainer-ce
 ```
 
-Weboberfläche:
+### Verwendete Ports
+
+Portainer verwendet den Port `9000/TCP` für die Weboberfläche.
+
+Die Weboberfläche kann über diese Adresse geöffnet werden:
 
 ```text
 http://localhost:9000
 ```
 
-Portainer beenden:
+### Portainer starten
 
-```bash
+```powershell
+docker compose -f portainer/portainer.yml up -d
+```
+
+### Portainer beenden
+
+```powershell
 docker compose -f portainer/portainer.yml down
 ```
 
-### Watchtower
+## Watchtower
 
-```bash
+### Aufgabe und Zweck
+
+Watchtower überprüft die Images von Docker-Containern auf neue Versionen. Wenn eine neue Version verfügbar ist, kann Watchtower das neue Image herunterladen und den Container aktualisieren. Weitere Informationen gibt es in der [Watchtower-Dokumentation](https://containrrr.dev/watchtower/).
+
+### Docker-Image
+
+```text
+containrrr/watchtower
+```
+
+### Ports und Weboberfläche
+
+Watchtower hat in dieser Konfiguration keine eigene Weboberfläche. Deshalb wird kein Port für eine Weboberfläche benötigt.
+
+Die Funktion kann über den Containerstatus und die Logs kontrolliert werden:
+
+```powershell
+docker compose -f watchtower/watchtower.yml logs
+```
+
+### Watchtower starten
+
+```powershell
 docker compose -f watchtower/watchtower.yml up -d
 ```
 
-Watchtower beenden:
+### Watchtower beenden
 
-```bash
+```powershell
 docker compose -f watchtower/watchtower.yml down
 ```
 
-### Nginx
+## Nginx
 
-```bash
-docker compose -f nginx/nginx.yml up -d
+### Aufgabe und Zweck
+
+Nginx ist ein Webserver. In diesem Projekt habe ich Nginx verwendet, um eine einfache Webseite über einen Docker-Container bereitzustellen. Weitere Informationen gibt es auf der [Nginx-Webseite](https://nginx.org/).
+
+### Docker-Image
+
+```text
+nginx:latest
 ```
 
-Webseite:
+### Verwendete Ports
+
+Der Host-Port `8080` wird an den Container-Port `80` weitergeleitet:
+
+```text
+8080:80
+```
+
+Die Webseite kann über diese Adresse geöffnet werden:
 
 ```text
 http://localhost:8080
 ```
 
-Nginx beenden:
+### Nginx starten
 
-```bash
+```powershell
+docker compose -f nginx/nginx.yml up -d
+```
+
+### Nginx beenden
+
+```powershell
 docker compose -f nginx/nginx.yml down
 ```
 
-## Sicherheit
+## Container kontrollieren
 
-Passwörter und andere Zugangsdaten dürfen nicht im GitHub-Repository gespeichert werden.
+Mit diesem Befehl werden alle laufenden Container angezeigt:
+
+```powershell
+docker ps
+```
+
+Mit diesem Befehl werden auch gestoppte Container angezeigt:
+
+```powershell
+docker ps -a
+```
